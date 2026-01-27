@@ -44,9 +44,9 @@ fn test_full_local_workflow() {
 
     // Apply
     let mut events = Vec::new();
-    let result = apply_template(&source_path, dest.path(), |e| events.push(e)).unwrap();
+    let result = apply_template(&source_path, dest.path(), true, |e| events.push(e)).unwrap();
 
-    // Verify
+    // Verify (with gitignore, .gitignore itself is copied but ignored patterns are not)
     assert_eq!(result.applied.len(), 3); // README.md, src/main.rs, .gitignore
     assert!(dest.path().join("README.md").exists());
     assert!(dest.path().join("src/main.rs").exists());
@@ -69,7 +69,7 @@ fn test_local_with_existing_files() {
         _ => panic!("Expected local source"),
     };
 
-    let result = apply_template(&source_path, dest.path(), |_| {}).unwrap();
+    let result = apply_template(&source_path, dest.path(), true, |_| {}).unwrap();
 
     assert_eq!(result.applied.len(), 2); // src/main.rs and .gitignore
     assert_eq!(result.skipped.len(), 1); // README.md
@@ -142,7 +142,7 @@ fn test_apply_events_are_emitted() {
     let source_path = fetch_local(src.path()).unwrap();
 
     let mut events = Vec::new();
-    apply_template(&source_path, dest.path(), |e| events.push(e)).unwrap();
+    apply_template(&source_path, dest.path(), false, |e| events.push(e)).unwrap();
 
     // Should have events for directories and files
     let applied_count = events.iter().filter(|e| matches!(e, ApplyEvent::FileApplied(_))).count();
@@ -161,7 +161,7 @@ fn test_nested_directory_creation() {
     let dest = TempDir::new().unwrap();
     let source_path = fetch_local(src.path()).unwrap();
 
-    let result = apply_template(&source_path, dest.path(), |_| {}).unwrap();
+    let result = apply_template(&source_path, dest.path(), false, |_| {}).unwrap();
 
     assert!(result.applied.iter().any(|p| p.ends_with("deep.txt")));
     assert!(dest.path().join("a/b/c/d/deep.txt").exists());
@@ -173,7 +173,7 @@ fn test_empty_template_produces_no_files() {
     let dest = TempDir::new().unwrap();
 
     let source_path = fetch_local(src.path()).unwrap();
-    let result = apply_template(&source_path, dest.path(), |_| {}).unwrap();
+    let result = apply_template(&source_path, dest.path(), false, |_| {}).unwrap();
 
     assert!(result.applied.is_empty());
     assert!(result.skipped.is_empty());

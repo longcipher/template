@@ -65,37 +65,40 @@ fn main() -> Result<()> {
     let source = parse_source(&cli.source)?;
 
     // Fetch the template source
-    let (source_path, _temp_dir) = match source.kind {
+    let (source_path, _temp_dir, respect_gitignore) = match source.kind {
         SourceKind::GitHub { owner, repo, subdir, revision } => {
             output::cloning(&owner, &repo);
             let (temp_dir, path) =
                 fetch_github(&owner, &repo, revision.as_deref(), subdir.as_deref(), cli.ssh)?;
             output::cloned();
-            (path, Some(temp_dir))
+            // GitHub clones don't need gitignore filtering (already clean)
+            (path, Some(temp_dir), false)
         }
         SourceKind::Local { path } => {
             output::local_template(&path);
             let resolved = fetch_local(&path)?;
-            (resolved, None)
+            // Local templates should respect .gitignore
+            (resolved, None, true)
         }
     };
 
     // Apply the template
     output::applying(&cli.destination);
 
-    let result = apply_template(&source_path, &cli.destination, |event| match event {
-        ApplyEvent::FileApplied(path) => {
-            output::file_applied(&path);
-        }
-        ApplyEvent::FileSkipped(path) => {
-            output::file_skipped(&path);
-        }
-        ApplyEvent::DirCreated(path) => {
-            if cli.verbose {
-                output::dir_created(&path);
+    let result =
+        apply_template(&source_path, &cli.destination, respect_gitignore, |event| match event {
+            ApplyEvent::FileApplied(path) => {
+                output::file_applied(&path);
             }
-        }
-    })?;
+            ApplyEvent::FileSkipped(path) => {
+                output::file_skipped(&path);
+            }
+            ApplyEvent::DirCreated(path) => {
+                if cli.verbose {
+                    output::dir_created(&path);
+                }
+            }
+        })?;
 
     // Print summary
     output::summary(result.applied.len(), result.skipped.len());

@@ -27,13 +27,15 @@
 //!             subdir.as_deref(),
 //!             false,
 //!         ).unwrap();
-//!         apply_template(&src_path, Path::new("."), |event| {
+//!         // GitHub clones don't need gitignore filtering (already clean)
+//!         apply_template(&src_path, Path::new("."), false, |event| {
 //!             println!("{:?}", event);
 //!         }).unwrap();
 //!     }
 //!     SourceKind::Local { path } => {
 //!         let src_path = fetch_local(&path).unwrap();
-//!         apply_template(&src_path, Path::new("."), |event| {
+//!         // Local templates respect .gitignore
+//!         apply_template(&src_path, Path::new("."), true, |event| {
 //!             println!("{:?}", event);
 //!         }).unwrap();
 //!     }
