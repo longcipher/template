@@ -1,0 +1,10 @@
+[package]
+name = "template-core"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+tempfile = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+walkdir = { workspace = true }
