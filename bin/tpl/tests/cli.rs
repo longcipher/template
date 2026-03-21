@@ -1,9 +1,12 @@
 //! CLI integration tests for tpl
 
+use std::{
+    fs::{self, File},
+    io::Write,
+};
+
 use assert_cmd::{Command, cargo::cargo_bin_cmd};
 use predicates::prelude::*;
-use std::fs::{self, File};
-use std::io::Write;
 use tempfile::TempDir;
 
 /// Get the tpl command

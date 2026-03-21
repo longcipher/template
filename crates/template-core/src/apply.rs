@@ -1,7 +1,9 @@
 //! Template application - copies files from source to destination.
 
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 use ignore::WalkBuilder;
 use walkdir::WalkDir;
@@ -87,8 +89,8 @@ where
                 callback(ApplyEvent::FileSkipped(relative.to_path_buf()));
             } else {
                 // Create parent directories if needed
-                if let Some(parent) = target.parent()
-                    && !parent.exists()
+                if let Some(parent) = target.parent() &&
+                    !parent.exists()
                 {
                     fs::create_dir_all(parent)?;
                     result.dirs_created.push(parent.to_path_buf());
@@ -125,8 +127,8 @@ where
                 callback(ApplyEvent::FileSkipped(relative.to_path_buf()));
             } else {
                 // Create parent directories if needed
-                if let Some(parent) = target.parent()
-                    && !parent.exists()
+                if let Some(parent) = target.parent() &&
+                    !parent.exists()
                 {
                     fs::create_dir_all(parent)?;
                     result.dirs_created.push(parent.to_path_buf());
@@ -145,8 +147,10 @@ where
 
 #[cfg(test)]
 mod tests {
-    use std::fs::{self, File};
-    use std::io::Write;
+    use std::{
+        fs::{self, File},
+        io::Write,
+    };
 
     use tempfile::TempDir;
 

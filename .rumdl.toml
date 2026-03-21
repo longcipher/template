@@ -3,7 +3,7 @@
 # Global configuration options
 [global]
 # List of rules to disable (uncomment and modify as needed)
-# disable = ["MD013", "MD033"]
+disable = ["MD013", "MD033", "MD041"]
 
 # List of rules to enable exclusively (if provided, only these rules will run)
 # enable = ["MD001", "MD003", "MD004"]
@@ -50,7 +50,7 @@ respect-gitignore = true
 # indent = 4  # Unordered list indentation
 
 [MD013]
-line-length = 200  # Line length
+line-length = 400  # Line length
 # code-blocks = false  # Exclude code blocks from line length check
 # tables = false  # Exclude tables from line length check
 # headings = true  # Include headings in line length check

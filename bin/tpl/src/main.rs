@@ -4,12 +4,11 @@ use std::path::PathBuf;
 
 use clap::Parser;
 use eyre::Result;
-use tracing::Level;
-use tracing_subscriber::FmtSubscriber;
-
 use template_core::{
     ApplyEvent, SourceKind, apply_template, fetch_github, fetch_local, parse_source,
 };
+use tracing::Level;
+use tracing_subscriber::FmtSubscriber;
 
 const EXAMPLES: &str = "\
 Examples:

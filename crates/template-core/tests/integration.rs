@@ -3,9 +3,11 @@
 //! Note: Some tests require network access and are marked with #[ignore].
 //! Run them with: cargo test -- --ignored
 
-use std::fs::{self, File};
-use std::io::Write;
-use std::path::Path;
+use std::{
+    fs::{self, File},
+    io::Write,
+    path::Path,
+};
 
 use tempfile::TempDir;
 use template_core::{
